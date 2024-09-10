@@ -1,22 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: menu
+  name: order
   labels:
-    app: menu
+    app: order
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: menu
+      app: order
   template:
     metadata:
       labels:
-        app: menu
+        app: order
     spec:
       containers:
-        - name: menu
-          image: "username/menu:latest"
+        - name: order
+          image: "mjbae327/order:latest"
+          env:
+            - name: api.url.store
+              value: "http://store:8080"
+            - name: api.url.menu
+              value: "http://menu:8080"
+            - name: api.url.inventory
+              value: "http://inventory:8080"
+            - name: api.url.gateway
+              value: "http://gateway:8080"
           ports:
             - containerPort: 8080
           readinessProbe:

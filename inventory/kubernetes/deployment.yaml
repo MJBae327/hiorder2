@@ -16,7 +16,16 @@ spec:
     spec:
       containers:
         - name: inventory
-          image: "username/inventory:latest"
+          image: "mjbae327/inventory:latest"
+          env:
+            - name: api.url.menu
+              value: "http://menu:8080"
+            - name: api.url.order
+              value: "http://order:8080"
+            - name: api.url.store
+              value: "http://store:8080"
+            - name: api.url.gateway
+              value: "http://gateway:8080"
           ports:
             - containerPort: 8080
           readinessProbe:
