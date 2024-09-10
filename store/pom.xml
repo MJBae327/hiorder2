@@ -90,11 +90,6 @@
 			<version>${cucumber.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>io.projectreactor.netty</groupId>
-			<artifactId>reactor-netty</artifactId>
-			<version>0.9.12.RELEASE</version>
-		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
