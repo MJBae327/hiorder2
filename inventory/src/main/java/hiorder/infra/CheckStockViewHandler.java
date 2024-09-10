@@ -1,6 +1,5 @@
 package hiorder.infra;
 
-import hiorder.config.kafka.KafkaProcessor;
 import hiorder.domain.*;
 import java.io.IOException;
 import java.util.List;
