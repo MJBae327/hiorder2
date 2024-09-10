@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>io.projectreactor.netty</groupId>
 			<artifactId>reactor-netty</artifactId>
-			<version>0.9.17.RELEASE</version>
+			<version>0.9.12.RELEASE</version>
 		</dependency>
 	</dependencies>
 
