@@ -27,11 +27,6 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-gateway</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>io.projectreactor.netty</groupId>
-			<artifactId>reactor-netty</artifactId>
-			<version>0.9.12.RELEASE</version>
-		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
@@ -42,11 +37,6 @@
 				<version>${spring-cloud.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>io.projectreactor.netty</groupId>
-				<artifactId>reactor-netty</artifactId>
-				<version>0.9.12.RELEASE</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
