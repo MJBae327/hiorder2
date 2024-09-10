@@ -11,19 +11,14 @@ import lombok.Data;
 @Entity
 @Table(name = "Cook_table")
 @Data
-//<<< DDD / Aggregate Root
 public class Cook {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     private Long tableId;
-
     private Long menuId;
-
     private Integer quantity;
-
     private String status;
 
     @PostPersist
@@ -33,63 +28,41 @@ public class Cook {
     }
 
     public static CookRepository repository() {
-        CookRepository cookRepository = StoreApplication.applicationContext.getBean(
-            CookRepository.class
-        );
+        CookRepository cookRepository = StoreApplication.applicationContext.getBean(CookRepository.class);
         return cookRepository;
     }
 
-    //<<< Clean Arch / Port Method
     public void isAccept(IsAcceptCommand isAcceptCommand) {
-        //implement business logic here:
-
-        Accepted accepted = new Accepted(this);
-        accepted.publishAfterCommit();
+        if (isAcceptCommand.getIsaccept()) {
+            this.setStatus("ACCEPTED");
+            Accepted accepted = new Accepted(this);
+            accepted.publishAfterCommit();
+        } else {
+            this.setStatus("REJECTED");
+            Rejected rejected = new Rejected(this);
+            rejected.publishAfterCommit();
+        }
     }
 
-    //>>> Clean Arch / Port Method
-    //<<< Clean Arch / Port Method
     public void start() {
-        //implement business logic here:
-
+        this.setStatus("COOKING");
         CookStarted cookStarted = new CookStarted(this);
         cookStarted.publishAfterCommit();
     }
 
-    //>>> Clean Arch / Port Method
-    //<<< Clean Arch / Port Method
     public void finish() {
-        //implement business logic here:
-
+        this.setStatus("FINISHED");
         CookFinished cookFinished = new CookFinished(this);
         cookFinished.publishAfterCommit();
     }
 
-    //>>> Clean Arch / Port Method
-
-    //<<< Clean Arch / Port Method
     public static void createCookInfo(OrderCreated orderCreated) {
-        //implement business logic here:
-
-        /** Example 1:  new item 
         Cook cook = new Cook();
+        cook.setTableId(orderCreated.getTableId());
+        cook.setMenuId(orderCreated.getMenuId().longValue());
+        cook.setQuantity(orderCreated.getQuantity());
+        cook.setStatus("CREATED");
         repository().save(cook);
-
-        */
-
-        /** Example 2:  finding and process
-        
-        repository().findById(orderCreated.get???()).ifPresent(cook->{
-            
-            cook // do something
-            repository().save(cook);
-
-
-         });
-        */
-
     }
-    //>>> Clean Arch / Port Method
-
 }
 //>>> DDD / Aggregate Root

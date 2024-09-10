@@ -1,11 +1,14 @@
 package hiorder.infra;
 
 import hiorder.domain.*;
+
+import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,75 +16,63 @@ import org.springframework.web.bind.annotation.RestController;
 //<<< Clean Arch / Inbound Adaptor
 
 @RestController
-// @RequestMapping(value="/cooks")
+@RequestMapping("/cooks")
 @Transactional
 public class CookController {
 
     @Autowired
     CookRepository cookRepository;
 
-    @RequestMapping(
-        value = "/cooks/{id}//isaccept",
-        method = RequestMethod.PUT,
-        produces = "application/json;charset=UTF-8"
-    )
-    public Cook isAccept(
-        @PathVariable(value = "id") Long id,
-        @RequestBody IsAcceptCommand isAcceptCommand,
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) throws Exception {
-        System.out.println("##### /cook/isAccept  called #####");
-        Optional<Cook> optionalCook = cookRepository.findById(id);
-
-        optionalCook.orElseThrow(() -> new Exception("No Entity Found"));
-        Cook cook = optionalCook.get();
-        cook.isAccept(isAcceptCommand);
-
-        cookRepository.save(cook);
-        return cook;
+    @PostMapping
+    public ResponseEntity<Cook> createCook(@RequestBody Cook cook) {
+        Cook savedCook = cookRepository.save(cook);
+        return ResponseEntity.ok(savedCook);
     }
 
-    @RequestMapping(
-        value = "/cooks/{id}/start",
-        method = RequestMethod.PUT,
-        produces = "application/json;charset=UTF-8"
-    )
-    public Cook start(
-        @PathVariable(value = "id") Long id,
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) throws Exception {
-        System.out.println("##### /cook/start  called #####");
-        Optional<Cook> optionalCook = cookRepository.findById(id);
-
-        optionalCook.orElseThrow(() -> new Exception("No Entity Found"));
-        Cook cook = optionalCook.get();
-        cook.start();
-
-        cookRepository.save(cook);
-        return cook;
+    @GetMapping("/{id}")
+    public ResponseEntity<Cook> getCook(@PathVariable Long id) {
+        return cookRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @RequestMapping(
-        value = "/cooks/{id}/finish",
-        method = RequestMethod.PUT,
-        produces = "application/json;charset=UTF-8"
-    )
-    public Cook finish(
-        @PathVariable(value = "id") Long id,
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) throws Exception {
-        System.out.println("##### /cook/finish  called #####");
-        Optional<Cook> optionalCook = cookRepository.findById(id);
+    @GetMapping
+    public ResponseEntity<List<Cook>> getAllCooks() {
+        List<Cook> cooks = (List<Cook>) cookRepository.findAll();
+        return ResponseEntity.ok(cooks);
+    }
 
-        optionalCook.orElseThrow(() -> new Exception("No Entity Found"));
-        Cook cook = optionalCook.get();
-        cook.finish();
+    @PutMapping("/{id}/isaccept")
+    public ResponseEntity<Cook> isAccept(@PathVariable Long id, @RequestBody IsAcceptCommand isAcceptCommand) {
+        return cookRepository.findById(id)
+                .map(cook -> {
+                    cook.isAccept(isAcceptCommand);
+                    Cook updatedCook = cookRepository.save(cook);
+                    return ResponseEntity.ok(updatedCook);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
 
-        cookRepository.save(cook);
-        return cook;
+    @PutMapping("/{id}/start")
+    public ResponseEntity<Cook> start(@PathVariable Long id) {
+        return cookRepository.findById(id)
+                .map(cook -> {
+                    cook.start();
+                    Cook updatedCook = cookRepository.save(cook);
+                    return ResponseEntity.ok(updatedCook);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}/finish")
+    public ResponseEntity<Cook> finish(@PathVariable Long id) {
+        return cookRepository.findById(id)
+                .map(cook -> {
+                    cook.finish();
+                    Cook updatedCook = cookRepository.save(cook);
+                    return ResponseEntity.ok(updatedCook);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }
 //>>> Clean Arch / Inbound Adaptor

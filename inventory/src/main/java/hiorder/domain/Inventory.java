@@ -15,7 +15,6 @@ import lombok.Data;
 @Entity
 @Table(name = "Inventory_table")
 @Data
-//<<< DDD / Aggregate Root
 public class Inventory {
 
     @Id
@@ -28,20 +27,19 @@ public class Inventory {
 
     @PostPersist
     public void onPostPersist() {
-        StockDecreased stockDecreased = new StockDecreased(this);
-        stockDecreased.publishAfterCommit();
-
         StockCreated stockCreated = new StockCreated(this);
         stockCreated.publishAfterCommit();
-
-        OutOfStock outOfStock = new OutOfStock(this);
-        outOfStock.publishAfterCommit();
     }
 
     @PostUpdate
     public void onPostUpdate() {
         StockUpdated stockUpdated = new StockUpdated(this);
         stockUpdated.publishAfterCommit();
+
+        if (this.quantity <= 0) {
+            OutOfStock outOfStock = new OutOfStock(this);
+            outOfStock.publishAfterCommit();
+        }
     }
 
     @PreRemove
@@ -52,38 +50,18 @@ public class Inventory {
 
     public static InventoryRepository repository() {
         InventoryRepository inventoryRepository = InventoryApplication.applicationContext.getBean(
-            InventoryRepository.class
+                InventoryRepository.class
         );
         return inventoryRepository;
     }
 
-    //<<< Clean Arch / Port Method
-    public static void decreaseStock(OrderCreated orderCreated) {
-        //implement business logic here:
-
-        /** Example 1:  new item 
-        Inventory inventory = new Inventory();
-        repository().save(inventory);
-
-        StockDecreased stockDecreased = new StockDecreased(inventory);
+    public void decreaseStock(int quantity) {
+        this.quantity -= quantity;
+        if (this.quantity < 0) {
+            this.quantity = 0;
+        }
+        StockDecreased stockDecreased = new StockDecreased(this);
         stockDecreased.publishAfterCommit();
-        */
-
-        /** Example 2:  finding and process
-        
-        repository().findById(orderCreated.get???()).ifPresent(inventory->{
-            
-            inventory // do something
-            repository().save(inventory);
-
-            StockDecreased stockDecreased = new StockDecreased(inventory);
-            stockDecreased.publishAfterCommit();
-
-         });
-        */
-
     }
-    //>>> Clean Arch / Port Method
-
 }
 //>>> DDD / Aggregate Root

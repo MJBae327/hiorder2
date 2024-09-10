@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.client.RestTemplate;
@@ -14,6 +16,12 @@ public class AbstractEvent {
 
     String eventType;
     Long timestamp;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${api.url.gateway}")
+    private String gatewayUrl;
 
     public AbstractEvent(Object aggregate) {
         this();
@@ -26,8 +34,7 @@ public class AbstractEvent {
     }
 
     public void publish() {
-        RestTemplate restTemplate = new RestTemplate();
-        String eventEndpoint = "http://example.com/events";
+        String eventEndpoint = gatewayUrl + "/events";
         try {
             String response = restTemplate.postForObject(eventEndpoint, toJson(), String.class);
             System.out.println("Event published successfully: " + response);

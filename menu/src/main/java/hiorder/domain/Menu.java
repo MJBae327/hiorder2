@@ -13,15 +13,12 @@ import lombok.Data;
 @Entity
 @Table(name = "Menu_table")
 @Data
-//<<< DDD / Aggregate Root
 public class Menu {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String name;
-
     private Integer price;
 
     @ElementCollection
@@ -49,9 +46,7 @@ public class Menu {
     }
 
     public static MenuRepository repository() {
-        MenuRepository menuRepository = MenuApplication.applicationContext.getBean(
-            MenuRepository.class
-        );
+        MenuRepository menuRepository = MenuApplication.applicationContext.getBean(MenuRepository.class);
         return menuRepository;
     }
 }

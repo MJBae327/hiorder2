@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.client.RestTemplate;
@@ -15,9 +17,15 @@ public class AbstractEvent {
     String eventType;
     Long timestamp;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${api.url.gateway}")
+    private String gatewayUrl;
+
     public AbstractEvent(Object aggregate) {
         this();
-        BeanUtils.copyProperties(aggregate, this);  // 필요한 필드 복사 로직
+        BeanUtils.copyProperties(aggregate, this);
     }
 
     public AbstractEvent() {
@@ -26,11 +34,8 @@ public class AbstractEvent {
     }
 
     public void publish() {
-        // 새 이벤트 발행 로직 (예: HTTP 요청을 통한 발행)
-        RestTemplate restTemplate = new RestTemplate();
-        String eventEndpoint = "http://example.com/events"; // 이벤트를 보낼 엔드포인트 설정 (적절히 변경 필요)
+        String eventEndpoint = gatewayUrl + "/events";
         try {
-            // 이벤트 객체를 JSON으로 변환하여 HTTP 요청으로 전송
             String response = restTemplate.postForObject(eventEndpoint, toJson(), String.class);
             System.out.println("Event published successfully: " + response);
         } catch (Exception e) {
