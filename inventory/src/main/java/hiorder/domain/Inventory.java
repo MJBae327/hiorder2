@@ -1,14 +1,7 @@
 package hiorder.domain;
 
 import hiorder.InventoryApplication;
-import hiorder.domain.OutOfStock;
-import hiorder.domain.StockCreated;
-import hiorder.domain.StockDecreased;
-import hiorder.domain.StockDeleted;
-import hiorder.domain.StockUpdated;
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
+
 import javax.persistence.*;
 import lombok.Data;
 

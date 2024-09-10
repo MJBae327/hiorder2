@@ -1,10 +1,8 @@
 package hiorder.domain;
 
 import hiorder.OrderApplication;
-import hiorder.domain.OrderCreated;
-import java.time.LocalDate;
+
 import java.util.Date;
-import java.util.List;
 import javax.persistence.*;
 import lombok.Data;
 

@@ -1,11 +1,7 @@
 package hiorder.domain;
 
 import hiorder.MenuApplication;
-import hiorder.domain.MenuCreated;
-import hiorder.domain.MenuDeleted;
-import hiorder.domain.MenuUpdated;
-import java.time.LocalDate;
-import java.util.Date;
+
 import java.util.List;
 import javax.persistence.*;
 import lombok.Data;
