@@ -2,7 +2,6 @@ package hiorder.infra;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hiorder.config.kafka.KafkaProcessor;
 import hiorder.domain.*;
 import javax.naming.NameParser;
 import javax.naming.NameParser;
@@ -20,7 +19,5 @@ public class PolicyHandler {
     @Autowired
     MenuRepository menuRepository;
 
-    @StreamListener(KafkaProcessor.INPUT)
-    public void whatever(@Payload String eventString) {}
 }
 //>>> Clean Arch / Inbound Adaptor

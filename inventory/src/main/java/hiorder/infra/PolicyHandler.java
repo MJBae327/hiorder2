@@ -2,7 +2,6 @@ package hiorder.infra;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hiorder.config.kafka.KafkaProcessor;
 import hiorder.domain.*;
 import javax.naming.NameParser;
 import javax.naming.NameParser;
@@ -20,13 +19,6 @@ public class PolicyHandler {
     @Autowired
     InventoryRepository inventoryRepository;
 
-    @StreamListener(KafkaProcessor.INPUT)
-    public void whatever(@Payload String eventString) {}
-
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='OrderCreated'"
-    )
     public void wheneverOrderCreated_DecreaseStock(
         @Payload OrderCreated orderCreated
     ) {

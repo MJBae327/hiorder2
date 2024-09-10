@@ -2,7 +2,6 @@ package hiorder.infra;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hiorder.config.kafka.KafkaProcessor;
 import hiorder.domain.*;
 import javax.naming.NameParser;
 import javax.naming.NameParser;
@@ -20,13 +19,6 @@ public class PolicyHandler {
     @Autowired
     OrderRepository orderRepository;
 
-    @StreamListener(KafkaProcessor.INPUT)
-    public void whatever(@Payload String eventString) {}
-
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='CookStarted'"
-    )
     public void wheneverCookStarted_UpdateStatus(
         @Payload CookStarted cookStarted
     ) {
@@ -39,10 +31,7 @@ public class PolicyHandler {
         Order.updateStatus(event);
     }
 
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='CookFinished'"
-    )
+
     public void wheneverCookFinished_UpdateStatus(
         @Payload CookFinished cookFinished
     ) {
@@ -55,10 +44,6 @@ public class PolicyHandler {
         Order.updateStatus(event);
     }
 
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='Rejected'"
-    )
     public void wheneverRejected_UpdateStatus(@Payload Rejected rejected) {
         Rejected event = rejected;
         System.out.println(
@@ -69,10 +54,6 @@ public class PolicyHandler {
         Order.updateStatus(event);
     }
 
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='Accepted'"
-    )
     public void wheneverAccepted_UpdateStatus(@Payload Accepted accepted) {
         Accepted event = accepted;
         System.out.println(
@@ -83,10 +64,6 @@ public class PolicyHandler {
         Order.updateStatus(event);
     }
 
-    @StreamListener(
-        value = KafkaProcessor.INPUT,
-        condition = "headers['type']=='OutOfStock'"
-    )
     public void wheneverOutOfStock_UpdateIsOrderable(
         @Payload OutOfStock outOfStock
     ) {
